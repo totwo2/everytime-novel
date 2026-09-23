@@ -1,11 +1,11 @@
 # everytime-novel — 全流程网络小说写作系统
 
+[English](README_EN.md) | 简体中文
+
 > **让 AI 写长篇不崩的网文写作系统。** 写长篇最怕三件事：写到几十章人设崩了、前后剧情对不上、满屏 AI 味。
 > 这套系统把写作拆成「先规划、后动笔」的两阶段流水线：
 > 规划阶段生成全书细纲并稽核通过才准写正文，每批正文还要过 20 个维度的稽核。
 > 去 AI 味既能写的时候顺手守住，也能事后单独跑一遍——它不绑定写作流程，随时可以脱开单用。
-
-**English:** A plan-first pipeline for long-form Chinese web novels. It locks the outline and chapter beats and audits them before a single page of prose is written, then runs a 20-dimension audit on every batch of chapters — catching dropped foreshadowing, drifting character names, inconsistent item/money chains, and AI-sounding prose. The de-AI-tone pass can be coupled into drafting or run standalone on any Chinese text. An optional style-DNA step distils your own writing fingerprint from ≥20 of your chapters (below that the statistics say nothing reliable). Ships with a standalone AI-tone checker and a style-statistics script, both self-testing.
 
 ## 它替你盯住了什么
 
