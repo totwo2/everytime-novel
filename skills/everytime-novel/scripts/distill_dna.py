@@ -17,6 +17,7 @@ L3 叙事习惯（主角行为逻辑、冲突处理、金手指节奏等）需�
 
 import re
 import sys
+import tempfile
 from collections import Counter
 from pathlib import Path
 
@@ -226,7 +227,9 @@ NARRATION_HEAVY = """# 第002章
 
 
 def self_test():
-    tmp = Path(__file__).resolve().parent / "_dna_selftest_tmp"
+    # 自测样本落系统临时目录：路径稳定（自测之间不冲突），且不写进 skill 包。
+    # 写在包内会被发布工具当成正式文件一起上传（打包排除表只认 .git/__pycache__ 那几项）。
+    tmp = Path(tempfile.gettempdir()) / "everytime-novel-selftest-dna"
     tmp.mkdir(parents=True, exist_ok=True)
     a, b = tmp / "dlg.md", tmp / "nar.md"
     a.write_text(DIALOGUE_HEAVY, encoding="utf-8")

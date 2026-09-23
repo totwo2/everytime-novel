@@ -19,6 +19,7 @@
 
 import re
 import sys
+import tempfile
 from pathlib import Path
 
 # ============================== 可调常量区 ==============================
@@ -403,7 +404,9 @@ CLEAN = """# 第002章：进山
 
 
 def self_test():
-    tmp = Path(__file__).resolve().parent / "_selftest_tmp"
+    # 自测样本落系统临时目录：路径稳定（自测之间不冲突），且不写进 skill 包。
+    # 写在包内会被发布工具当成正式文件一起上传（打包排除表只认 .git/__pycache__ 那几项）。
+    tmp = Path(tempfile.gettempdir()) / "everytime-novel-selftest-ai-tone"
     tmp.mkdir(parents=True, exist_ok=True)
     dirty_p, clean_p = tmp / "dirty.md", tmp / "clean.md"
     dirty_p.write_text(DIRTY, encoding="utf-8")
