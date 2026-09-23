@@ -1,0 +1,4 @@
+.publish-staging/
+__pycache__/
+*.pyc
+_selftest_tmp/
