@@ -5,8 +5,10 @@ English | [简体中文](README.md)
 > **A writing system that keeps AI from falling apart on long novels.** Three things ruin a long
 > web novel: the characters drift by chapter 50, the plot contradicts itself, and every page
 > reeks of AI. This system splits writing into a plan-first, two-phase pipeline —
-> the outline and chapter beats must pass an audit before a single page of prose is written,
-> and every batch of chapters then goes through a 20-dimension audit.
+> nothing gets written until the planning is complete: long novels run four layers
+> (setting → outline → volume outline → chapter beats), while short ones (about 7–10 chapters)
+> run three (setting → outline → chapter beats, with no volume outline).
+> Prose is written chapter by chapter and audited the same way.
 > The de-AI-tone pass can be held to while drafting or run separately afterwards — it is not
 > welded to the writing flow and can be detached and used on its own at any time.
 
@@ -23,8 +25,8 @@ English | [简体中文](README.md)
 | No way to tell whether the AI tone is gone | A bundled checker reports rule number and line number per hit — no "does it read like AI" guesswork |
 
 None of this is a paper design: the author wrote a full web novel with it — 495 chapters of
-《听说这棍能擀面？》 — and the pitfalls hit along the way became 52 lessons shipped with the pack
-(`lessons.md`).
+《听说这棍能擀面？》 ("They Say This Stick Can Roll Dough?") — and the pitfalls hit along the way
+became 52 lessons shipped with the pack (`lessons.md`).
 
 ## 30-second start
 
@@ -35,7 +37,8 @@ skillhub install everytime-novel
 (`skillhub` is the skill-marketplace CLI. If you already installed it, skip this and just say the
 line below to your AI.)
 
-Then say one sentence to your AI:
+Then say one sentence to your AI (the system writes in Chinese, so the trigger sentence is Chinese
+— "I want to write an urban novel"):
 
 ```
 我要写一本都市小说
@@ -50,11 +53,56 @@ Seeing that happen means it is installed.
 If it starts writing without asking about the setting, it did not install: run `skillhub list` and
 check whether `everytime-novel` is there.
 
+## It will stop you: planning comes before prose
+
+This is the biggest difference from "just let the AI write" — **it does not accept "just write a
+couple of chapters and see how it feels."**
+
+Nothing gets written until the planning is complete. And the whole pipeline runs on two tracks:
+
+| Stage | Long novel (dozens of chapters or more) | Short / mid-length (about 7–10 chapters) |
+|---|---|---|
+| **Planning layers** | setting → outline → volume outline → **chapter beats** | setting → outline → **chapter beats** (**no volume outline** — one volume is one chapter) |
+| **Beat generation** | Batched, phase by phase | **Chapter by chapter** |
+| **Planning audit** | Beat audit, chapter by chapter | Beat audit, chapter by chapter |
+| **Drafting** | Chapter by chapter; audited once per phase (≈ 15–20 chapters) | **Chapter by chapter; audited chapter by chapter** |
+| **Prose audit** | 20-dimension audit per batch | **All 20 dimensions, nothing dropped** |
+| **Cross-volume review** | Yes (multi-volume comparison) | **None** — there is only one volume |
+
+**One term, one meaning: a short story has no volume outline — only chapter beats.** The volume
+outline belongs to long novels alone (one per volume, written volume by volume); in a short story
+**one volume is one chapter**, so that layer simply does not exist and the planning stack stops at
+the beats. **The beats themselves are required identically in both tiers** — only the way they are
+generated differs: **batched** by phase for long novels, **chapter by chapter** for short ones.
+
+**The audit is not downgraded for short stories.** All 20 dimensions still run — especially the
+**item chain and money chain**: continuity has nothing to do with length. Where a bottle of water
+came from, what it was used for, how many days are left — a short story gets that wrong just as
+easily. The only thing that disappears is cross-volume review, because there is only one volume.
+
+**The tier can change; the gate does not.**
+
+**What goes into the beats (identical in both tiers)**: **state / story beats / scene / conflict /
+turning point / foreshadowing / forbidden items / end state** — nothing dropped.
+
+**How to set word count**: a long novel first fixes the **total word count** and the **chapter
+count**, then divides (e.g. 3M words ÷ 800 chapters ≈ 3750 per chapter) and uses that as the
+drafting floor. A short story **only fixes the total** — per-chapter length is not fixed, because
+padding every chapter to the same size hurts the pacing.
+
+**A short story is not a "lite long novel"**: what it drops is what only a novel of dozens of
+chapters needs (the beats layer, phase batching, cross-volume review) — not the "say it clearly
+first" gate.
+
+**Why the gate is this strict**: a novel falls apart before the first sentence, not after.
+Characters contradicting themselves, foreshadowing planted and never paid off, padded pacing —
+by the time these show up in the prose, fixing them costs several times more.
+
 ## Four entry points — pick up wherever you are
 
 | Your situation | Say to the AI | What it does |
 |---|---|---|
-| You only have an idea | "我要写一本 XX 小说" | Talks the setting through with you → outline → volume outline → all chapter beats → audits them, and only starts writing after you approve |
+| You only have an idea | "我要写一本 XX 小说" | Talks the setting through with you → outline → volume outline → chapter beats (a short story has no volume outline; its beats are written chapter by chapter) → audits them, and only starts writing after you approve |
 | You already have chapter beats | "从 ch111 开始写" | Writes prose in batches; each batch is audited and fixed before the next begins |
 | You have a pile of drafts | "对 vol02 去 AI 味" | Runs the checker to locate hits first; if everything is green it changes not a single word; only hits are edited, output to `deaid/`, plot and characters untouched |
 | The whole book is written | "审查全书" | Audits all 20 dimensions volume by volume, then cross-volume checks (contradictions, foreshadowing, timeline) |
@@ -64,7 +112,8 @@ check whether `everytime-novel` is there.
 
 ```
 Planning phase (all of it must finish before drafting starts):
-  volume outline → beat batch 1 → beat batch 2 → … → all beats ready → beat audit
+  long novels: volume outline → beat batch 1 → beat batch 2 → … → all beats ready → beat audit
+  short ones : beats (chapter by chapter) → beat audit
 
 Drafting phase (prose written batch by batch):
   prose batch 1 → audit → fix → prose batch 2 → audit → …
@@ -142,8 +191,10 @@ Both are pure local scripts — read-only, no network — and can be run on thei
 
 ## When not to use it
 
-- **Short stories / single chapters**: its value is in novels of dozens of chapters or more — the beat
-  gate and cross-volume review show nothing at small chapter counts.
+- **Single chapters / very short pieces (1–3 chapters)**: its value is in planning at scale — at
+  that few chapters, the planning gate and cross-volume review show nothing.
+  **Note: short stories of seven to ten chapters still apply**, via the short tier — setting →
+  outline → chapter beats (no volume outline; beats written chapter by chapter).
 - **You already have a draft you like and only want the style changed**: a standalone de-AI-tone run is
   enough; there is no need for the whole pipeline.
 - **You want it to invent the plot for you**: it manages "do not fall apart", not "come up with a good
@@ -156,4 +207,4 @@ Both are pure local scripts — read-only, no network — and can be run on thei
 - A whole-book quality-review pass: pronoun repair, format unification, cross-volume auxiliary forms
 - 52 pitfall records (`lessons.md`) shipped with the pack; most audit rules come from real failures
 
-Current version: v1.4.0
+Current version: v1.5.0
